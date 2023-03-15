@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block Head %}
+<style>
+	.delete-btn{
+		background-color: red; 
+		color: #fff;
+		padding: 4px;
+		font-size: 22px;
+		border-radius: 10px;
+	}
+	.delete-btn:hover{
+		color: red;
+		background-color: #333;
+	}
+	.edit-btn{
+		
+			background-color: blueviolet; 
+			color: #fff;
+			padding: 4px;
+			font-size: 22px;
+			border-radius: 10px;
+		}
+		.edit-btn:hover{
+			color: blueviolet;
+			background-color: #333;
+		}
+</style>
+{% endblock Head %}
+
+{% block Body %}
+{% load martortags %}
+
+<!-- header 
+	================================================== -->
+{% include "Partials/Header.html" %}
+<!-- end header -->
+
+{% if Category %}
+	<!-- page header
+   ================================================== -->
+	<section id="page-header">
+		<div class="row current-cat">
+			<div class="col-full">
+				<h1>Category: {{Category.name}}</h1>
+			</div>   		
+		</div>
+	</section>
+{% endif %}
+
+
+<!-- masonry
+	================================================== -->
+
+<section id="bricks">
+
+	<div class="row masonry">
+
+		<!-- brick-wrapper -->
+		<div class="bricks-wrapper">
+
+			<div class="grid-sizer"></div>
+			{% if not Category %}
+			  	{% include "Partials/slider.html" %}
+			{% endif %}
+			{% for Post in Posts %}
+				
+				<!-- !Image Posts -->
+				{% if Post.image %}
+					<article class="brick entry format-standard animate-this">
+						<div class="entry-thumb">
+							<a href="{% url 'Post:Photo_Detail' Post.slug %}" class="thumb-link">
+								<img src="{{ Post.image.url }}" alt="building">
+							</a>
+						</div>
+							<div class="entry-text">
+								<div class="entry-header">
+									<div class="entry-meta">
+										<span class="cat-links">
+											{% for Category in Post.category.all %}
+												<a href="{% url 'Post:Category_Filter' Category.name %}">{{Category.name}}</a>
+											{% endfor %}
+										</span>
+									</div>
+									<h1 class="entry-title"><a href="{% url 'Post:Photo_Detail' Post.slug %}"> {{Post.title}} </a></h1>
+								</div>
+							<div class="entry-excerpt">{{Post.body|safe_markdown|truncatewords:10}}</div>
+						</div>
+					</article> <!-- end article -->
+					<!-- !End Format Image -->
+				{% elif Post.audio %}
+					<!-- !Audio post format -->
+					<article class="brick entry format-audio animate-this">
+						<div class="entry-thumb">
+							<a href="{% url 'Post:Audio_Detail' Post.slug %}" class="thumb-link">
+								<img src="{% if Post.cover %}{{Post.cover.url}}{% endif %}" alt="{{Post.title}}">
+							</a>
+							<div class="audio-wrap">
+								<audio id="player" src="{{ Post.audio.url }}" width="100%" height="42"
+									controls="controls"></audio>
+							</div>
+						</div>
+						<div class="entry-text">
+							<div class="entry-header">
+								<div class="entry-meta">
+									<span class="cat-links">
+										{% for Category in Post.category.all %}
+											<a href="{% url 'Post:Category_Filter' Category.name %}">{{ Category.name }}</a>
+										{% endfor %}
+									</span>
+								</div>
+								<h1 class="entry-title"><a href="{% url 'Post:Audio_Detail' Post.slug %}">{{ Post.title }}</a></h1>
+							</div>
+							<div class="entry-excerpt">{{Post.body|safe_markdown|truncatewords:10}}</div>
+						</div>
+					</article> <!-- /article -->
+					<!-- !End audio post format -->
+				{% elif Post.video %}
+					<!-- !Video Post format -->
+					<article class="brick entry format-video animate-this">
+						<div class="entry-thumb video-image">
+							<!-- http://player.vimeo.com/video/14592941?title=0&amp;byline=0&amp;portrait=0&amp;color=F64B39 -->
+							<!-- data-lity -->
+							<a href="{% url 'Post:Video_Detail' Post.slug %}"> 
+								<img src="{% if Post.cover %}{{Post.cover.url}}{% endif %}" alt="bokeh">
+							</a> 
+						</div>
+						<div class="entry-text">
+							<div class="entry-header">
+								<div class="entry-meta">
+									<span class="cat-links">
+										{% for Category in Post.category.all %}
+										<a href="{% url 'Post:Category_Filter' Category.name %}">{{ Category.name }}</a>
+										{% endfor %}
+									</span>
+								</div>
+								<h1 class="entry-title"><a href="{% url 'Post:Video_Detail' Post.slug %}">{{Post.title}}</a></h1>
+							</div>
+							<div class="entry-excerpt">{{Post.body|safe_markdown|truncatewords:10}}</div>
+						</div>
+					</article> <!-- end article -->
+					<!-- !End video post format -->
+				{% else %}
+					<!-- !Text Post format -->
+					<article class="brick entry format-quote animate-this">
+						<div class="entry-thumb">
+							<blockquote>
+								<p> {{Post.body|linebreaks}} </p>
+								<cite> {{Post.author}} </cite>
+								{% if user == Post.author %}
+									<a href="{% url 'Post:Delete_TextPost' Post.id %}"  
+									class="delete-btn">
+										Delete
+									</a>
+									<a href="{% url 'Post:Edit_TextPost' Post.id %}"  class="edit-btn">
+										Edit
+									</a>
+								{% endif %}
+							</blockquote>
+						</div>
+					</article> <!-- end article -->
+					<!-- !End text post format -->
+				{% endif %}
+			{% endfor %}
+		</div> <!-- end brick-wrapper -->
+	</div> <!-- end row -->
+	
+	<!-- ! Paginator -->
+	<div class="row">
+		<nav class="pagination">
+			<!-- ! previous page -->
+			{% if Posts.has_previous %}
+				<a href="?page={{Posts.previous_page_number}}" class="page-numbers prev">Prev</a>
+				{% else %}
+				<span class="page-numbers prev inactive">Prev</span>
+			{% endif %}
+			<!-- ! End previous page -->
+
+			<!-- ! Next Page -->
+			{% for Num in Posts.paginator.page_range %}
+			  	{% if Num == Posts.number %}
+				  	<span class="page-numbers current"> {{ Posts.number }} </span>
+				{% elif Num != Posts.number %}
+					<a href="?page={{Num}}" class="page-numbers">{{ Num }}</a>
+				{% endif %}
+			{% endfor %}
+			<!-- ! End range page -->
+
+			<!-- ! Next page -->
+			{% if Posts.has_next %}
+				<a href="?page={{Posts.next_page_number}}" class="page-numbers next">Next</a>
+				{% else %}
+				<span class="page-numbers next inactive">Next</span>
+			{% endif %}
+			<!-- ! End next page -->
+		</nav>
+	</div>
+	<!-- ! End paginator -->
+</section> <!-- end bricks -->
+
+<!-- footer 
+================================================== -->
+{% include "Partials/Footer.html" %}
+<!-- end footer -->
+
+{% endblock Body %}

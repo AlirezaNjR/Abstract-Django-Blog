@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block Head %}
+    <title> {{User.username}} Profile</title>
+{% endblock Head %}
+
+{% block Body %}
+{% include "Partials/Header.html" %}
+<section style="text-align: center;">
+    <img src="{{User.image.url}}" width="150px" style="border-radius: 100%;">
+    <p>{{User.username}}</p>
+    <p>{{User.first_name}} {{User.last_name}}</p>
+    <ul class="author-social">  
+        {% if User.instagram %}<li><a href="{{ User.instagram }}">Instagram</a>
+        </li>{% endif %}
+        {% if User.telegram %}<li><a href="{{ User.telegram }}">Telegram</a></li>
+        {% endif %}
+        {% if User.site %}<li><a href="{{ User.site }}">WebSite</a></li>{% endif %}
+    </ul>
+</section>
+{% include "Partials/Footer.html" %}
+{% endblock Body %}

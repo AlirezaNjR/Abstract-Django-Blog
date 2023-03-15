@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block Head %}
+<title>Login</title>
+<link rel="stylesheet" href="{% static 'css/registration/login.css' %}">
+{% endblock Head %}
+
+{% block Body %}
+<section>
+    <div class="comments-wrap" style="height: 100vh;">
+        <div class="respond">
+            <div id="comments" class="row">
+                <div class="col-full">
+                    <form method="POST" >
+                        {% csrf_token %}
+                        <fieldset>
+                            <div class="form-field">
+                                <input class="full-width" type="text" name="username" placeholder="Username"
+                                    id="username" required autofocus>
+                            </div>
+                            <div class="form-field">
+                                <input class="full-width" type="password" name="password" id="pass"
+                                    placeholder="Password" required autofocus>
+                            </div>
+                            <button type="submit" class="submit button-primary">Sign In</button>
+                            <a href="{% url 'Accounts:SignUp' %}">Sign Up</a>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock Body %}

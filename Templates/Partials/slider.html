@@ -1,0 +1,55 @@
+<div class="brick entry featured-grid animate-this">
+    <div class="entry-content">
+        <!-- !  slide -->
+        <div id="featured-post-slider" class="flexslider">
+            <ul class="slides">
+                {% for Post in Last_Post %}
+                {% if Post.audio %} <!-- !Audio -->
+                <li>
+                    <div class="featured-post-slide">
+                        <div class="post-background" style="background-image:url('{% if Post.cover %}{{Post.cover.url}}{% endif %}');"></div>
+                        <div class="overlay"></div>
+                        <div class="post-content">
+                            <ul class="entry-meta">
+                                <li>{{ Post.datetime }}</li>
+                                <li><a href="#">{{ Post.author }}</a></li>
+                            </ul>
+                            <h1 class="slide-title"><a href="{% url 'Post:Audio_Detail' Post.slug %}"
+                                    title="{{ Post.title }}"> {{ Post.title }} </a></h1>
+                        </div>
+                </li> <!-- /slide -->
+                {% elif Post.image %}<!-- !Photo -->
+                <li>
+                    <div class="featured-post-slide">
+                        <div class="post-background" style="background-image:url('{{ Post.image.url }}');"></div>
+                        <div class="overlay"></div>
+                        <div class="post-content">
+                            <ul class="entry-meta">
+                                <li>{{ Post.datetime }}</li>
+                                <li><a href="#">{{ Post.author }}</a></li>
+                            </ul>
+                            <h1 class="slide-title"><a href="{% url 'Post:Photo_Detail' Post.slug %}"
+                                    title="{{ Post.title }}"> {{ Post.title }} </a></h1>
+                        </div>
+                </li> <!-- /slide -->
+                {% elif Post.video %} <!-- !Video -->
+                <li>
+                    <div class="featured-post-slide">
+                        <div class="post-background" style="background-image:url('{% if Post.cover %}{{Post.cover.url}}{% endif %}');"></div>
+                        <div class="overlay"></div>
+                        <div class="post-content">
+                            <ul class="entry-meta">
+                                <li>{{ Post.datetime }}</li>
+                                <li><a href="#">{{ Post.author }}</a></li>
+                            </ul>
+                            <h1 class="slide-title"><a href="{% url 'Post:Video_Detail' Post.slug %}"
+                                    title="{{ Post.title }}"> {{ Post.title }} </a></h1>
+                        </div>
+                </li> <!-- /slide -->
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div> <!-- end featured-post-slider -->
+        <!-- !End slider  -->
+    </div> <!-- end entry content -->
+</div>

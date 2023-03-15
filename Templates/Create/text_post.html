@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block Head %}
+<title> Create New Post </title>
+<style>
+    body {
+        background-color: #E2E2E2;
+    }
+</style>
+{% endblock Head %}
+
+{% block Body %}
+<section>
+    {% include "Partials/Header.html" %}
+    <div class="comments-wrap">
+        <div class="respond">
+            <div id="comments" class="row">
+                <div class="col-full">
+
+                    <form method="post" class="create-form" enctype="multipart/form-data">
+                        {% if form.errors %}
+                        {% for field in form %}
+                        {% if field.errors %}
+                        {% for error in field.errors %}
+                        <p class="error" style="color:red ; font-size: 26px;"> <i
+                                class="fa fa-exclamation-triangle"></i> {{field.label}} : {{error}}</p>
+                        {% endfor %}
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+
+                        {% csrf_token %}
+                        <fieldset>
+                            <div class="form-field">
+                                <label for="id_body">Body:</label>
+                                <textarea name="body"  required id="id_body" class="full-width">{% if Post %}{{Post.body}}{% endif %}</textarea>
+                            </div>
+                            
+                            <button type="submit" class="submit button-primary">Post</button>
+                            <a href="{% url 'Post:Home' %}">Home</a>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include "Partials/Footer.html" %}
+</section>
+{% endblock Body %}

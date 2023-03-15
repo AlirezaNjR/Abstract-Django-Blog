@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block Head %}
+<title> Create New Post </title>
+<style>
+    .selection .selection-item {
+        width: 99%;
+        font-size: 32px;
+        text-align: center;
+        margin-top: 10px;
+        padding: 10px;
+        display: block;
+        background-color: #E2E2E2;
+        color: #333;
+        border: 1px solid black;
+        border-radius: 25px;
+        transition: 0.4s;
+    }
+
+    .selection-item:hover {
+        background-color: #333;
+        color: #E2E2E2;
+    }
+</style>
+{% endblock Head %}
+
+{% block Body %}
+{% include "Partials/Header.html" %}
+<section class="selection">
+    <a href="{% url 'Post:Create_VideoPost' %}" class="selection-item">New Video Post</a>
+    <a href="{% url 'Post:Create_AudioPost' %}" class="selection-item">New Audio Post</a>
+    <a href="{% url 'Post:Create_PhotoPost' %}" class="selection-item">New Photo Post</a>
+    <a href="{% url 'Post:Create_TextPost' %}" class="selection-item">New Text Post</a>
+</section>
+{% include "Partials/Footer.html" %}
+{% endblock Body %}

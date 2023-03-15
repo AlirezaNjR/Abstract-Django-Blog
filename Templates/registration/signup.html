@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block Head %}
+<title> Sign Up </title>
+<style>
+    body {
+        background-color: #E2E2E2;
+    }
+</style>
+{% endblock Head %}
+
+{% block Body %}
+<section>
+    <div class="comments-wrap">
+        <div class="respond">
+            <div id="comments" class="row">
+                <div class="col-full">
+
+                    <form method="post" class="create-form" enctype="multipart/form-data">
+                        {% if form.errors %}
+                            {% for field in form %}
+                                {% if field.errors %}
+                                    {% for error in field.errors %}
+                                        <p class="error" style="color:red ; font-size: 26px;"> <i class="fa fa-exclamation-triangle"></i> {{field.label}} : {{error}}</p>
+                                    {% endfor %}
+                                {% endif %} 
+                            {% endfor %}
+                        {% endif %}
+            
+                        {% csrf_token %}
+                        <fieldset>
+                            <div class="form-field">
+                                <label for="id_username">Username :</label>
+                                <div class="helptext">Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+                                    only.</div>
+                                <input type="text" name="username" maxlength="150" autofocus required id="id_username"
+                                    class="full-width" placeholder="Rose">
+                            </div>
+                            <div class="form-field">
+                                <label for="id_first_name">First name :</label>
+                                <input type="text" name="first_name" maxlength="150" id="id_first_name"
+                                    class="full-width" placeholder="Rose">
+                            </div>
+                            <div class="form-field">
+                                <label for="id_last_name">Last name :</label>
+                                <input type="text" name="last_name" maxlength="150" id="id_last_name" class="full-width"
+                                    placeholder="Parker">
+                            </div>
+                            <div class="form-field">
+                                <label for="id_email">Email address :</label>
+                                <input type="email" name="email" maxlength="254" id="id_email" class="full-width"
+                                    placeholder="Example@Gmail.com">
+                            </div>
+                            <div class="form-field">
+                                <label for="id_bio">Bio:</label>
+                                <textarea name="bio" cols="40" rows="10" maxlength="300" required id="id_bio"
+                                    class="full-width" placeholder="Hi my name is Rose"></textarea>
+                            </div>
+                            <div class="form-field">
+                                <label for="id_image">Profile Image :</label>
+                                <input type="file" name="image" accept="image/*" id="id_image" class="full-width">
+                            </div>
+                            <div class="form-field">
+                                <label for="id_instagram">Instagram :</label>
+                                <input type="url" name="instagram" maxlength="200" id="id_instagram" class="full-width"
+                                    placeholder="https://www.instagram.com/YourId">
+                            </div>
+                            <div class="form-field">
+                                <label for="id_telegram">Telegram :</label>
+                                <input type="url" name="telegram" maxlength="200" id="id_telegram" class="full-width"
+                                    placeholder="https://t.me/YourID">
+                            </div>
+                            <div class="form-field">
+                                <label for="id_site">Site :</label>
+                                <input type="url" name="site" maxlength="200" id="id_site" class="full-width"
+                                    placeholder="www.YourSite.com">
+                            </div>
+                            <div class="form-field">
+                                <label for="id_password1">Password :</label>
+                                <div class="helptext">
+                                    <ul>
+                                        <li>Your password can’t be too similar to your other personal information.</li>
+                                        <li>Your password must contain at least 8 characters.</li>
+                                        <li>Your password can’t be a commonly used password.</li>
+                                        <li>Your password can’t be entirely numeric.</li>
+                                    </ul>
+                                </div>
+                                <input type="password" name="password1" autocomplete="new-password" required
+                                    id="id_password1" class="full-width" placeholder="">
+                            </div>
+                            <div class="form-field">
+                                <label for="id_password2">Password confirmation :</label>
+                                <div class="helptext">Enter the same password as before, for verification.</div>
+                                <input type="password" name="password2" autocomplete="new-password" required
+                                    id="id_password2" class="full-width" placeholder="">
+                            </div>
+                            <button type="submit" class="submit button-primary">Sign Up</button>
+                            <a href="{% url 'Accounts:login' %}">Sign In</a>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock Body %}

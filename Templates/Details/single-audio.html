@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+{% load static %}
+{% load martortags %}
+
+{% block Head %}
+	<title>{{ Post.title }}</title>
+	<style>
+		.delete-btn{
+			float:right; 
+			background-color: red; 
+			color: #fff;
+			padding: 10px;
+			font-size: 22px;
+			border-radius: 10px;
+		}
+		.delete-btn:hover{
+			color: red;
+			background-color: #333;
+		}
+		.edit-btn{
+			margin-right: 5px;
+			float:right; 
+			background-color: blueviolet; 
+			color: #fff;
+			padding: 10px;
+			font-size: 22px;
+			border-radius: 10px;
+		}
+		.edit-btn:hover{
+			color: blueviolet;
+			background-color: #333;
+		}
+	</style>
+{% endblock Head %}
+
+{% block Body %}
+<!-- ! Header 
+   	================================================== -->
+{% include "Partials/Header.html" %}
+<!-- ! End header -->
+
+<!-- ! Content
+   ================================================== -->
+<section id="content-wrap" class="blog-single">
+	<div class="row">
+		<div class="col-twelve">
+
+			<article class="format-audio">
+				<div class="content-media">
+					<div class="post-thumb">
+						<img src="{{ Post.cover.url }}">
+					</div>
+					<div class="audio-wrap">
+						<audio id="player2" src="{{ Post.audio.url }}" width="100%" height="42"
+							controls="controls"></audio>
+					</div>
+				</div>
+				<div class="primary-content">
+					<h1 class="entry-title"> {{Post.title}} </h1>
+					<ul class="entry-meta">
+						<li class="date"> {{ Post.datetime }} </li>
+						<li class="cat">
+							{% for Category in Post.category.all %}
+							<a href="{% url 'Post:Category_Filter' Category.name %}">{{ Category.name }}</a>
+							{% endfor %}
+						</li>
+						{% if user == Post.author %}
+							<a href="{% url 'Post:Delete_AudioPost' Post.id %}"  class="delete-btn">
+								Delete
+							</a>
+							<a href="{% url 'Post:Edit_AudioPost' Post.id %}"  class="edit-btn">
+								Edit
+							</a>
+						{% endif %}
+					</ul>
+					{{Post.body|safe_markdown}}
+					<p class="tags">
+						<span>Tagged in :</span>
+						{% for Tag in Post.tags.all  %}
+							<a href="{% url 'Post:Home' %}?Tag={{Tag}}">{{ Tag }}</a>
+						{% endfor %}
+						
+					</p>
+					
+					<!-- ! Author profiel -->
+					<div class="author-profile">
+						<img src="{% if Post.author.image %} {{Post.author.image.url}} {% endif %}" alt="">
+
+						<div class="about">
+							<h4><a href="{% url 'Accounts:Profile' Post.author.id %}">{% if Post.author.first_name or Post.author.last_name %}
+									{{Post.author.first_name}} {{Post.author.last_name}}
+									{% else %}
+									{{Post.author.username}}
+									{% endif %}
+								</a></h4>
+							<p>{{ Post.author.bio }}</p>
+							<ul class="author-social">
+								{% if Post.author.instagram %}<li><a href="{{ Post.author.instagram }}">Instagram</a>
+								</li>{% endif %}
+								{% if Post.author.telegram %}<li><a href="{{ Post.author.telegram }}">Telegram</a></li>
+								{% endif %}
+								{% if Post.author.site %}<li><a href="{{ Post.author.site }}">WebSite</a></li>{% endif %}
+							</ul>
+						</div>
+					</div> <!-- ! end author-profile -->
+
+				</div> <!-- end entry-primary -->
+
+				<div class="pagenav group">
+					<div class="prev-nav">
+						<a href="#" rel="prev">
+							<span>Previous</span>
+							Tips on Minimalist Design
+						</a>
+					</div>
+					<div class="next-nav">
+						<a href="#" rel="next">
+							<span>Next</span>
+							Less Is More
+						</a>
+					</div>
+				</div>
+
+			</article>
+
+
+		</div> <!-- end col-twelve -->
+	</div> <!-- end row -->
+	<!-- ! Start Comments -->
+	<div class="comments-wrap">
+		<div id="comments" class="row">
+			<div class="col-full">
+				<h3>{{Post.Comments.all.count}} Comments</h3>
+
+				<!-- commentlist -->
+				<ol class="commentlist">
+					{% for Comment in Post.Comments.all %}
+						{% if Comment.user %}
+							<li class="depth-1">
+								<div class="avatar">
+									<img width="50" height="50" class="avatar" src="
+									{% if Comment.user.image %} 
+										{{Comment.user.image.url}}
+									{% else %}
+										{% static 'images\icons8-comments-96.png' %}
+									{% endif %} 
+									" alt="">
+								</div>
+								<div class="comment-content">
+									<div class="comment-info">
+										<cite>{% if Comment.user.first_name or Comment.user.last_name %}
+											{{Comment.user.first_name}} {{Comment.user.last_name}}
+											{% else %}
+											{{Comment.user.username}}
+											{% endif %}
+										</cite>
+										<div class="comment-meta">
+											<time class="comment-time" datetime="{{Comment.datetime}}">{{Comment.datetime}}</time>
+											<span class="sep">/</span><a class="reply" href="#">Reply</a>
+										</div>
+									</div>
+									<div class="comment-text">
+										<p> {{Comment.message}} </p>
+									</div>
+								</div>
+							</li>
+						{% else %}
+							<li class="depth-1">
+								<div class="avatar">
+									<img width="50" height="50" class="avatar" src="
+										{% static 'images\icons8-comments-96.png' %}
+									" alt="">
+								</div>
+								<div class="comment-content"><div class="comment-info">
+										<cite>{{Comment.name}}</cite>
+										<div class="comment-meta">
+											<time class="comment-time" datetime="{{Comment.datetime}}">{{Comment.datetime}}</time>
+											<span class="sep">/</span><a class="reply" href="#">Reply</a>
+										</div>
+									</div>
+									<div class="comment-text">
+										<p> {{Comment.message}} </p>
+									</div>
+								</div>
+							</li>
+						{% endif %}
+					{% endfor %}
+			 <!-- Commentlist End -->
+				<!-- respond -->
+				<div class="respond">
+
+					<h3>Leave a Comment</h3>
+					{% if CommentForm.errors %}
+						{% for field in CommentForm %}
+							{% if field.errors %}
+								{% for error in field.errors %}
+									<p class="error" style="color:red ; font-size: 26px;"> <i class="fa fa-exclamation-triangle"></i>
+										{{field.label}} : {{error}}</p>
+								{% endfor %}
+							{% endif %}
+						{% endfor %}
+					{% endif %}
+
+					{% if user.is_authenticated %}
+						<form method="post" action="{% url 'Comment:Add_AudioPost_Comment' Post.slug %}"> <!-- name="contactForm" id="contactForm" -->
+							{% csrf_token %}
+							<fieldset>
+								<div class="message form-field">
+									<textarea name="message" id="cMessage" class="full-width"
+										placeholder="Your Message"></textarea>
+								</div>
+								<button type="submit" class="submit button-primary">Submit</button>
+							</fieldset>
+						</form>
+					{% else %}
+						<form method="post" action="{% url 'Comment:Add_AudioPost_Comment' Post.slug %}"> <!-- name="contactForm" id="contactForm" -->
+							{% csrf_token %}
+							<fieldset>
+									<div class="form-field">
+										<input name="name" type="text" id="cName" class="full-width" placeholder="Your Name"
+											value="">
+									</div>
+
+									<div class="form-field">
+										<input name="email" type="text" id="cEmail" class="full-width" placeholder="Your Email"
+											value="">
+									</div>
+
+									<div class="form-field">
+										<input name="website" type="text" id="cWebsite" class="full-width"
+											placeholder="Website" value="">
+									</div>
+
+									<div class="message form-field">
+										<textarea name="message" id="cMessage" class="full-width"
+											placeholder="Your Message"></textarea>
+									</div>
+
+								</fieldset>
+							<button type="submit" class="submit button-primary">Submit</button>
+						</form> <!-- Form End -->
+					{% endif %}
+				</div> <!-- Respond End -->
+			</div> <!-- end col-full -->
+		</div> <!-- end row comments -->
+	</div> <!-- end comments-wrap -->
+
+</section> <!-- end content -->
+
+<!-- footer
+	================================================== -->
+{% include "Partials/Footer.html" %}
+<!-- end footer -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+{% endblock Body %}

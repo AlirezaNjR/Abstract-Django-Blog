@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block Head %}
+  
+{% endblock Head %}
+
+{% block Body %}
+{% include "Partials/Header.html" %}    
+<h1>Are you sure ?</h1>
+<form  method="post">
+    {% csrf_token %}
+    <input type="submit" value="Delete">
+    <a href="#">Back</a>
+</form>
+
+{% include "Partials/Footer.html" %}    
+
+{% endblock Body %}

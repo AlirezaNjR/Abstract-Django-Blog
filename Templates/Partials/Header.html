@@ -1,0 +1,82 @@
+<header class="short-header">
+    <div class="gradient-block"></div>
+
+    <div class="row header-content">
+
+        <div class="logo">
+            <a href="{% url 'Post:Home' %}">Author</a>
+        </div>
+
+        <nav id="main-nav-wrap">
+            <ul class="main-navigation sf-menu">
+
+                <li {% if request.path == '/' %} class="current" {% endif %}>
+                    <a href="{% url 'Post:Home' %}" title="">Home</a>
+                </li>
+
+                <li class="has-children">
+                    <a href="#" title="Categories">Categories</a>
+                    <ul class="sub-menu">
+                        {% for Category in Categories %}
+                        <li><a href="{% url 'Post:Category_Filter' Category.name %}">{{Category}}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                
+                <li {% if request.path == '/About/' %} class="current" {% endif %}>
+                    <a href="{% url 'Main:About' %}" title="">About</a>
+                </li>
+
+                <li {% if request.path == '/Contact/' %} class="current" {% endif %}>
+                    <a href="{% url 'Main:Contact' %}" title="">Contact</a>
+                </li>
+                {% if user.is_authenticated %}
+                <li><span style="color: black;"> | </span></li>
+                <li class="has-children">
+                    <a href="#" title="{{user}}">
+                        {% if user.first_name or user.last_name %}
+                        Hi {{user.first_name}} {{user.last_name}}
+                        {% else %}
+                        {{user.username}}
+                        {% endif %} </a>
+                    <ul class="sub-menu">
+                        <li><a href="{% url 'Accounts:Profile' user.id %}">Profile</a></li>
+                        <li><a href="{% url 'Accounts:logout' %}">Logout</a></li>
+                    </ul>
+                </li>
+                {% else %}
+                <li><span style="color: black;"> | </span></li>
+                <li>
+                    <a href="{% url 'Accounts:login' %}" title="">Sign In</a>
+                </li>
+                <li>
+                    <a href="{% url 'Accounts:SignUp' %}" title="">Sign Up</a>
+                </li>
+            {% endif %}
+
+
+            </ul>
+        </nav> <!-- end main-nav-wrap -->
+
+        <div class="search-wrap">
+
+            <form role="search" method="get" class="search-form" action="{% url 'Post:Search' %}">
+                <label>
+                    <span class="hide-content">Search for:</span>
+                    <input type="search" class="search-field" placeholder="Type Your Keywords" value="" name="Search"
+                        title="Search for:" autocomplete="off">
+                </label>
+                <input type="submit" class="search-submit" value="Search">
+            </form>
+
+            <a href="#" id="close-search" class="close-btn">Close</a>
+
+        </div> <!-- end search wrap -->
+
+        <div class="triggers">
+            <a class="search-trigger" href="#"><i class="fa fa-search"></i></a>
+            <a class="menu-toggle" href="#"><span>Menu</span></a>
+        </div> <!-- end triggers -->
+    </div>
+
+</header>
